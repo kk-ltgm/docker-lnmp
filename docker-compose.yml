@@ -1,0 +1,47 @@
+version: '2'
+services:
+  nginx:
+    build: $D_COMPOSE_ROOT/nginx
+    ports:
+      - "$D_NGINX_PORT:80"
+    volumes:
+      - $D_COMPOSE_ROOT/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - $D_COMPOSE_ROOT/nginx/conf.d:/etc/nginx/conf.d
+      - $D_COMPOSE_ROOT/nginx/log:/var/log/nginx
+      - $D_PROJECT_ROOT:/var/www
+    depends_on:
+      - phpfpm
+  phpfpm:
+    build: $D_COMPOSE_ROOT/phpfpm
+    volumes:
+      - $D_COMPOSE_ROOT/phpfpm/php-fpm.d:/usr/local/etc/php-fpm.d
+      - $D_COMPOSE_ROOT/phpfpm/log:/var/log/phpfpm
+      - $D_PROJECT_ROOT:/var/www
+    depends_on:
+      - redis
+      - mysql
+  mysql:
+    build: $D_COMPOSE_ROOT/mysql
+    ports:
+      - "$D_MYSQL_PORT:3306"
+    volumes:
+      - $D_COMPOSE_ROOT/mysql/my.cnf:/etc/mysql/my.cnf
+      - $D_COMPOSE_ROOT/mysql/conf.d:/etc/mysql/conf.d
+      - $D_COMPOSE_ROOT/mysql/log:/var/log/mysql
+      - $D_COMPOSE_ROOT/mysql/data:/var/lib/mysql
+    env_file:
+      - $D_COMPOSE_ROOT/mysql/config.env
+  redis:
+    build: $D_COMPOSE_ROOT/redis
+    command: redis-server /usr/local/etc/redis/redis.conf
+    ports:
+      - "$D_REDIS_PORT:6379"
+    volumes:
+      - $D_COMPOSE_ROOT/redis/redis.conf:/usr/local/etc/redis/redis.conf
+      - $D_COMPOSE_ROOT/redis/log:/var/log/redis
+      - $D_COMPOSE_ROOT/redis/data:/data
+
+
+  
+
+
