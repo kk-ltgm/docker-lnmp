@@ -20,6 +20,7 @@ services:
     depends_on:
       - redis
       - mysql
+      - mongo
   mysql:
     build: $D_COMPOSE_ROOT/mysql
     ports:
@@ -40,7 +41,13 @@ services:
       - $D_COMPOSE_ROOT/redis/redis.conf:/usr/local/etc/redis/redis.conf
       - $D_COMPOSE_ROOT/redis/log:/var/log/redis
       - $D_COMPOSE_ROOT/redis/data:/data
-
+  mongo:
+    build: $D_COMPOSE_ROOT/mongo
+    ports:
+      - "$D_MONGO_PORT:27017"
+    volumes:
+      - $D_COMPOSE_ROOT/mongo/data/db:/data/db
+      - $D_COMPOSE_ROOT/mongo/data/configdb:/data/configdb
 
   
 
